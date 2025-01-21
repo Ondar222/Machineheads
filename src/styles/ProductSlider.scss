@@ -30,6 +30,7 @@
 .slider-wrapper {
   display: flex;
   transition: transform 0.3s ease-in-out;
+  transform: translateX(calc(currentSlide * (100% / slidesPerView)));
 }
 
 .slider-controls {

@@ -83,16 +83,21 @@ const ProductSlider: React.FC = () => {
   );
 
   const slidesPerView = 5;
-  const maxSlide = Math.max(0, products.length - slidesPerView);
+  const infiniteProducts = [...products, ...products, ...products];
 
+  // Обработчик переключения на предыдущий слайд
   const handlePrevSlide = () => {
-    setCurrentSlide((current) => Math.max(0, current - 1));
+    setCurrentSlide((current) =>
+      current === 0 ? infiniteProducts.length - slidesPerView : current - 1
+    );
   };
 
+  // Обработчик переключения на следующий слайд
   const handleNextSlide = () => {
-    setCurrentSlide((current) => Math.min(maxSlide, current + 1));
+    setCurrentSlide((current) => (current + 1) % infiniteProducts.length);
   };
 
+  // Обработчик изменения количества
   const handleQuantityChange = (productId: number, change: number) => {
     setQuantities((prev) => ({
       ...prev,
@@ -109,10 +114,11 @@ const ProductSlider: React.FC = () => {
           className="slider-wrapper"
           style={{
             transform: `translateX(-${currentSlide * (100 / slidesPerView)}%)`,
+            transition: "transform 0.3s ease-in-out",
           }}
         >
-          {products.map((product) => (
-            <div key={product.id} className="product-card">
+          {infiniteProducts.map((product, index) => (
+            <div key={`${product.id}-${index}`} className="product-card">
               <div className="product-card__images">
                 <div className="product-card__icons">
                   <img src="src/img/Top.jpg" alt="Top" width={35} height={35} />
@@ -221,14 +227,12 @@ const ProductSlider: React.FC = () => {
           <button
             className="slider-button slider-button--prev"
             onClick={handlePrevSlide}
-            disabled={currentSlide === 0}
           >
             <ChevronLeft size={24} />
           </button>
           <button
             className="slider-button slider-button--next"
             onClick={handleNextSlide}
-            disabled={currentSlide === maxSlide}
           >
             <ChevronRight size={24} />
           </button>
